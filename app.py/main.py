@@ -1,11 +1,10 @@
 import pandas as pd
 import gradio as gr
 import numpy as np
-
 from transformers import pipeline #Install these libraries again on host computer
-from sklearn.linear_model import Linear
-from sklearn import train_test_split
-
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
 
 user_input = input()
 generator = pipeline("text-generation", model = "gpt-neo-125M")
@@ -17,6 +16,7 @@ courier_trips_data = pd.read_csv("courier_trips.csv")
 jobs_like_data = pd.read_csv("jobs_like.csv")
 rides_trips_data = pd.read_csv("rides_trips.csv")
 surge_by_hour_data = pd.read_csv("surge_by_hour.csv")
+heat_data = pd.read_csv("heat_data.csv")
 
 #convert to numpy 
 rides_trips_array = rides_trips_data.to_numpy()

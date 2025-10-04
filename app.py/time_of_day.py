@@ -1,5 +1,3 @@
-import main
-
 def calculate_time_of_day_score():  # Nehir
 
     X = ['city_id', 'hour', 'surge_multiplier']
@@ -11,8 +9,6 @@ def calculate_time_of_day_score():  # Nehir
     X_test = test_df[X]
     
     y_train = train_df[y]
-    y_test = test_df[y]
-
 
     linear_model = LinearRegression()
     linear_model.fit(X_train, y_train)

@@ -1,8 +1,11 @@
 import main 
-from sklearn.model_selection import train_test_split
+import pandas as pd
+import gradio as gr
+import numpy as np
+from transformers import pipeline #Install these libraries again on host computer
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score
-
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
 
 # # Join rides_trips with earners (drivers)
 # rides_with_earners = rides_trips.merge(
@@ -13,6 +16,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 # couriers_with_earners = courier_trips.merge(
 #     earners, left_on="courier_id", right_on="earner_id", how="inner"
 # )
+
+courier_trips_data = pd.read_csv("courier_trips.csv")
 
 x_courier = courier_trips_data[['city_id', 'start_time', 'distance_km', 'duration_mins', 'basket_value_eur']]   # predictors
 y_courier = courier_trips_data['net_earnings']   
@@ -27,6 +32,8 @@ def predict_net_earnings_courier():
     pass
     
 def predict_net_earnings_rides():
+    rides_trips_data = pd.read_csv("rides_trips.csv")
+
     rides_trips_data["start_time"] = pd.to_datetime(rides_trips_data["start_time"])
     
     # Extract continuous features from start_time
