@@ -7,7 +7,13 @@ def ride_score(duration):
     3: 44-65
     4: 66-87
     5: 88-110
+
     """
+    try:
+        duration = float(duration)  # Convert string to float
+    except ValueError:
+        return "Invalid input"
+    
     if 0 <= duration <= 21:
         return 1
     elif 22 <= duration <= 43:
