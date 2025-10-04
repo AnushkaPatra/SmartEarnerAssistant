@@ -177,34 +177,87 @@ def show_dashboard(role):
     earnings_frame = tk.Frame(content, bg=COLORS['bg_card'], pady=10, padx=10)
     earnings_frame.pack(fill="x", pady=(0,10))
 
-    tk.Label(earnings_frame, text="Predict Courier Trip Earnings:", bg=COLORS['bg_card'], fg=COLORS['text_primary'], font=("Segoe UI", 12)).grid(row=0, column=0, columnspan=2, sticky="w", pady=(0,5))
+    #tk.Label(earnings_frame, text="Predict Courier Trip Earnings:", bg=COLORS['bg_card'], fg=COLORS['text_primary'], font=("Segoe UI", 12)).grid(row=0, column=0, columnspan=2, sticky="w", pady=(0,5))
 
-    # Input fields
-    tk.Label(earnings_frame, text="City ID:", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=1, column=0, sticky="e", padx=(0,5))
-    entry_city = tk.Entry(earnings_frame, width=5)
-    entry_city.grid(row=1, column=1, sticky="w")
+    # # Input fields
+    # tk.Label(earnings_frame, text="City ID:", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=1, column=0, sticky="e", padx=(0,5))
+    # entry_city = tk.Entry(earnings_frame, width=5)
+    # entry_city.grid(row=1, column=1, sticky="w")
 
-    tk.Label(earnings_frame, text="Distance (km):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=2, column=0, sticky="e", padx=(0,5))
-    entry_distance = tk.Entry(earnings_frame, width=5)
-    entry_distance.grid(row=2, column=1, sticky="w")
+    # tk.Label(earnings_frame, text="Distance (km):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=2, column=0, sticky="e", padx=(0,5))
+    # entry_distance = tk.Entry(earnings_frame, width=5)
+    # entry_distance.grid(row=2, column=1, sticky="w")
 
-    tk.Label(earnings_frame, text="Duration (mins):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=3, column=0, sticky="e", padx=(0,5))
-    entry_duration = tk.Entry(earnings_frame, width=5)
-    entry_duration.grid(row=3, column=1, sticky="w")
+    # tk.Label(earnings_frame, text="Duration (mins):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=3, column=0, sticky="e", padx=(0,5))
+    # entry_duration = tk.Entry(earnings_frame, width=5)
+    # entry_duration.grid(row=3, column=1, sticky="w")
 
-    tk.Label(earnings_frame, text="Start Hour (0–23.99):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=4, column=0, sticky="e", padx=(0,5))
-    entry_hour = tk.Entry(earnings_frame, width=5)
-    entry_hour.grid(row=4, column=1, sticky="w")
+    # tk.Label(earnings_frame, text="Start Hour (0–23.99):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=4, column=0, sticky="e", padx=(0,5))
+    # entry_hour = tk.Entry(earnings_frame, width=5)
+    # entry_hour.grid(row=4, column=1, sticky="w")
 
-    tk.Label(earnings_frame, text="Day of Week (0=Mon,6=Sun):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=5, column=0, sticky="e", padx=(0,5))
-    entry_day = tk.Entry(earnings_frame, width=5)
-    entry_day.grid(row=5, column=1, sticky="w")
+    # tk.Label(earnings_frame, text="Day of Week (0=Mon,6=Sun):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=5, column=0, sticky="e", padx=(0,5))
+    # entry_day = tk.Entry(earnings_frame, width=5)
+    # entry_day.grid(row=5, column=1, sticky="w")
 
-    # Output label
-    output_label_earnings = tk.Label(earnings_frame, text="", bg=COLORS['bg_card'], fg=COLORS['accent'], font=("Segoe UI", 12, "bold"))
-    output_label_earnings.grid(row=6, column=0, columnspan=2, pady=(10,0))
+    # # Output label
+    # output_label_earnings = tk.Label(earnings_frame, text="", bg=COLORS['bg_card'], fg=COLORS['accent'], font=("Segoe UI", 12, "bold"))
+    # output_label_earnings.grid(row=6, column=0, columnspan=2, pady=(10,0))
 
-    # Button to calculate
+    # # Button to calculate
+    # def process_earnings_input():
+    #     try:
+    #         city_id = int(entry_city.get())
+    #         distance_km = float(entry_distance.get())
+    #         duration_mins = float(entry_duration.get())
+    #         start_hour_cont = float(entry_hour.get())
+    #         day_of_week = int(entry_day.get())
+
+    #         model, _, _, _, _, bins = predict_net_earnings_courier()
+    #         predicted, rating = predict_new_trip(model, city_id, distance_km, duration_mins, start_hour_cont, day_of_week, bins)
+    #         output_label_earnings.config(text=f"Predicted Earnings: €{predicted:.2f}  |  Rating: {rating}/5")
+    #     except Exception as e:
+    #         output_label_earnings.config(text=f"Error: {e}")
+
+    # tk.Button(earnings_frame, text="Predict", command=process_earnings_input,
+    #         bg=COLORS['accent'], fg=COLORS['text_primary'], font=("Segoe UI", 11, "bold")).grid(row=7, column=0, columnspan=2, pady=(5,0))
+
+    # Courier Net Earnings input - Single line layout
+    earnings_frame = tk.Frame(content, bg=COLORS['bg_card'], pady=10, padx=10)
+    earnings_frame.pack(fill="x", pady=(0,10))
+
+    tk.Label(earnings_frame, text="Predict Earnings:", bg=COLORS['bg_card'],
+            fg=COLORS['text_primary'], font=("Segoe UI", 12)).pack(side="left", padx=(0,10))
+
+    tk.Label(earnings_frame, text="City:", bg=COLORS['bg_card'], fg=COLORS['text_secondary'], 
+            font=("Segoe UI", 10)).pack(side="left", padx=(0,3))
+    entry_city = tk.Entry(earnings_frame, width=5, font=("Segoe UI", 10))
+    entry_city.pack(side="left", padx=(0,8))
+
+    tk.Label(earnings_frame, text="Dist(km):", bg=COLORS['bg_card'], fg=COLORS['text_secondary'],
+            font=("Segoe UI", 10)).pack(side="left", padx=(0,3))
+    entry_distance = tk.Entry(earnings_frame, width=5, font=("Segoe UI", 10))
+    entry_distance.pack(side="left", padx=(0,8))
+
+    tk.Label(earnings_frame, text="Dur(min):", bg=COLORS['bg_card'], fg=COLORS['text_secondary'],
+            font=("Segoe UI", 10)).pack(side="left", padx=(0,3))
+    entry_duration = tk.Entry(earnings_frame, width=5, font=("Segoe UI", 10))
+    entry_duration.pack(side="left", padx=(0,8))
+
+    tk.Label(earnings_frame, text="Hour:", bg=COLORS['bg_card'], fg=COLORS['text_secondary'],
+            font=("Segoe UI", 10)).pack(side="left", padx=(0,3))
+    entry_hour = tk.Entry(earnings_frame, width=5, font=("Segoe UI", 10))
+    entry_hour.pack(side="left", padx=(0,8))
+
+    tk.Label(earnings_frame, text="Day(0-6):", bg=COLORS['bg_card'], fg=COLORS['text_secondary'],
+            font=("Segoe UI", 10)).pack(side="left", padx=(0,3))
+    entry_day = tk.Entry(earnings_frame, width=5, font=("Segoe UI", 10))
+    entry_day.pack(side="left", padx=(0,10))
+
+    output_label_earnings = tk.Label(earnings_frame, text="", bg=COLORS['bg_card'], 
+                                    fg=COLORS['accent'], font=("Segoe UI", 12, "bold"))
+    output_label_earnings.pack(side="left", padx=(10,0))
+
     def process_earnings_input():
         try:
             city_id = int(entry_city.get())
@@ -212,18 +265,17 @@ def show_dashboard(role):
             duration_mins = float(entry_duration.get())
             start_hour_cont = float(entry_hour.get())
             day_of_week = int(entry_day.get())
-
+            
             model, _, _, _, _, bins = predict_net_earnings_courier()
-            predicted, rating = predict_new_trip(model, city_id, distance_km, duration_mins, start_hour_cont, day_of_week, bins)
-            output_label_earnings.config(text=f"Predicted Earnings: €{predicted:.2f}  |  Rating: {rating}/5")
+            predicted, rating = predict_new_trip(model, city_id, distance_km, duration_mins, 
+                                                start_hour_cont, day_of_week, bins)
+            output_label_earnings.config(text=f"€{predicted:.2f} | {rating}★")
         except Exception as e:
-            output_label_earnings.config(text=f"Error: {e}")
+            output_label_earnings.config(text=f"Error: {str(e)[:20]}")
 
     tk.Button(earnings_frame, text="Predict", command=process_earnings_input,
-            bg=COLORS['accent'], fg=COLORS['text_primary'], font=("Segoe UI", 11, "bold")).grid(row=7, column=0, columnspan=2, pady=(5,0))
-
-
-
+            bg=COLORS['accent'], fg=COLORS['text_primary'], 
+            font=("Segoe UI", 11, "bold")).pack(side="left", padx=(10,0))
     # # Recommended Jobs section
     # jobs_frame = tk.Frame(content, bg=COLORS['bg_secondary'])
     # jobs_frame.pack(fill="both", expand=True, pady=(0,10))
