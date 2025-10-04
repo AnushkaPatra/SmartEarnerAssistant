@@ -1,19 +1,21 @@
 import main
 
 def calculate_cancellation_score(cancellation_rate, file): # file data
-    file = main.pd.read_csv("file")
+    cancellation_rates = main.np.array(file["cancellation_rate_pct"])
+    # print(file.columns)
 
-    rates = file["cancellation_rate_pct"]
+    minimum_rate = main.np.min(cancellation_rates)
+    maximum_rate = main.np.max(cancellation_rates)
+    print(maximum_rate, minimum_rate)
+    labels = main.np.zeros(len(cancellation_rates))
+    for i in range(len(labels)):
+        labels[i] = mapToScore(cancellation_rates[i], maximum_rate, minimum_rate, 5, 1)
 
-    rate_level = main.np.average[rates] / 5 # to determine the label of the rate between 1 and 5
+    rate_level = main.np.average(cancellation_rates) / 5 # to determine the label of the rate between 1 and 5
     
-    labels = main.np.where(rates <= rate_level, 5, rates)
-    labels = main.np.where(rates <= rate_level*2, 4, rates)
-    labels = main.np.where(rates <= rate_level*3, 3, rates)
-    labels = main.np.where(rates <= rate_level*4, 2, rates)
-    labels = main.np.where(rates > rate_level*4, 1, rates)
-
-    X_train, y_train, X_test, y_test = main.train_test_split(rates, labels, test_size=0.3, random_state=42)
+    print(len(cancellation_rates), len(labels))
+    X_train, X_test, y_train, y_test = main.train_test_split(cancellation_rates.reshape(-1,1), labels, test_size=0.3, random_state=42)
+    print(X_train.shape, y_train.shape)
     linear_regression_model = main.LinearRegression()
     linear_regression_model.fit(X_train, y_train)
 
@@ -22,8 +24,14 @@ def calculate_cancellation_score(cancellation_rate, file): # file data
     mse = main.mean_squared_error(y_test, test_predictions)
     print(f"Mean squared error: {mse:.4f}")
     
-    y_pred = linear_regression_model.predict(cancellation_rate) # X_test instead of cancellation_rate
+    y_pred = linear_regression_model.predict(main.np.array(cancellation_rate).reshape(-1,1)) # X_test instead of cancellation_rate
     cancellation_score = y_pred
+
+    if (cancellation_score < 1):
+        cancellation_score = 1
+    elif (cancellation_score > 5):
+        cancellation_score = 5
+
 
     print(cancellation_score)
 
@@ -34,5 +42,19 @@ def calculate_cancellation_score(cancellation_rate, file): # file data
     # main.plt.title("Linear Regression with scikit-learn")
     # main.plt.legend()
     # main.plt.show()
+    # cancellation_score
+    return 
 
-    return cancellation_score
+def mapToScore(rate, max_rate, min_rate, upper_bound, lower_bound):
+    score = -1
+
+    if (max_rate == min_rate):
+        score = (upper_bound + lower_bound) / 2
+    else:
+        score = (upper_bound + 1) - ((rate - min_rate) / (max_rate - min_rate) * (upper_bound - lower_bound) + lower_bound)
+    
+    return score
+
+
+file = main.pd.read_csv(r"..\resources\cancellation_rates.csv")
+calculate_cancellation_score(1, file)
