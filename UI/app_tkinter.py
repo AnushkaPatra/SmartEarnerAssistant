@@ -3,6 +3,19 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 import datetime
 
+import sys
+import os
+
+# Go up one level and add to path
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, parent_dir)
+
+from application.wellbeing import ride_score
+from application.net_earnings_courier import predict_new_trip
+from application.net_earnings_courier import predict_net_earnings_courier
+
+
+
 # ---------------- CONFIGURATION ---------------- #
 COLORS = {
     'bg_primary': '#0A0A0A',
@@ -36,76 +49,23 @@ def get_current_time():
     return datetime.datetime.now().strftime("%H:%M")
 
 def create_metric_card(parent, title, value, subtitle=""):
-    """Create a professional metric card."""
     card = tk.Frame(parent, bg=COLORS['bg_card'], highlightbackground=COLORS['text_muted'], highlightthickness=1)
     card.pack(side="left", padx=10, fill="both", expand=True)
-    
-    tk.Label(card, text=title, font=("Segoe UI", 11), 
-             bg=COLORS['bg_card'], fg=COLORS['text_muted']).pack(pady=(15, 5))
-    
-    tk.Label(card, text=value, font=("Segoe UI", 24, "bold"),
-             bg=COLORS['bg_card'], fg=COLORS['text_primary']).pack()
-    
+    tk.Label(card, text=title, font=("Segoe UI", 11), bg=COLORS['bg_card'], fg=COLORS['text_muted']).pack(pady=(15,5))
+    tk.Label(card, text=value, font=("Segoe UI", 24, "bold"), bg=COLORS['bg_card'], fg=COLORS['text_primary']).pack()
     if subtitle:
-        tk.Label(card, text=subtitle, font=("Segoe UI", 10),
-                 bg=COLORS['bg_card'], fg=COLORS['text_secondary']).pack(pady=(5, 15))
+        tk.Label(card, text=subtitle, font=("Segoe UI", 10), bg=COLORS['bg_card'], fg=COLORS['text_secondary']).pack(pady=(5,15))
     else:
-        tk.Label(card, text="", bg=COLORS['bg_card']).pack(pady=(5, 15))
-    
+        tk.Label(card, text="", bg=COLORS['bg_card']).pack(pady=(5,15))
     return card
 
 def create_action_button(parent, text, command, color=None):
-    """Create a professional action button."""
     bg_color = color if color else COLORS['accent']
     btn = tk.Button(parent, text=text, command=command,
                     bg=bg_color, fg=COLORS['text_primary'],
                     font=("Segoe UI", 11, "bold"),
                     bd=0, relief="flat", padx=20, pady=10, cursor="hand2")
     return btn
-
-# ---------------- MAIN FUNCTIONS ---------------- #
-def show_role_selection():
-    desc_frame.pack_forget()
-    role_frame.pack(fill="both", expand=True)
-
-def select_role(role):
-    """Role confirmation popup."""
-    popup = tk.Toplevel(root)
-    popup.configure(bg=COLORS['bg_secondary'])
-    popup.geometry("500x300")
-    popup.resizable(False, False)
-    popup.transient(root)
-    popup.grab_set()
-
-    # Center popup
-    popup.update_idletasks()
-    x = (popup.winfo_screenwidth() // 2) - (500 // 2)
-    y = (popup.winfo_screenheight() // 2) - (300 // 2)
-    popup.geometry(f"500x300+{x}+{y}")
-
-    frame = tk.Frame(popup, bg=COLORS['bg_secondary'])
-    frame.pack(fill="both", expand=True, padx=40, pady=40)
-
-    tk.Label(frame, text="✓ Role Confirmed", font=("Segoe UI", 13),
-             bg=COLORS['bg_secondary'], fg=COLORS['success']).pack(pady=(0,10))
-
-    tk.Label(frame, text=role, font=("Segoe UI", 32, "bold"),
-             bg=COLORS['bg_secondary'], fg=COLORS['text_primary']).pack(pady=10)
-
-    tk.Label(frame, text="Preparing your personalized dashboard...",
-             font=("Segoe UI", 12), bg=COLORS['bg_secondary'], fg=COLORS['text_secondary']).pack(pady=(0,30))
-
-    def open_dashboard():
-        popup.destroy()
-        role_frame.pack_forget()
-        show_dashboard(role)
-
-    continue_btn = tk.Button(frame, text="Continue →", command=open_dashboard,
-              font=("Segoe UI", 14, "bold"),
-              bg=COLORS['accent'], fg=COLORS['text_primary'],
-              activebackground=COLORS['accent_hover'],
-              bd=0, relief="flat", cursor="hand2")
-    continue_btn.pack(fill="x", ipady=8)
 
 def create_hover_button(parent, text, command, icon=""):
     btn = tk.Button(parent, text=f"{icon} {text}".strip(), command=command,
@@ -117,51 +77,168 @@ def create_hover_button(parent, text, command, icon=""):
     btn.bind("<Leave>", lambda e: btn.config(bg=COLORS['bg_card']))
     return btn
 
-def show_dashboard(role):
-    """Dynamic dashboard for Driver or Courier."""
-    dashboard_frame.pack(fill="both", expand=True)
+# ---------------- MAIN FUNCTIONS ---------------- #
+def show_role_selection():
+    desc_frame.pack_forget()
+    role_frame.pack(fill="both", expand=True)
 
+def select_role(role):
+    popup = tk.Toplevel(root)
+    popup.configure(bg=COLORS['bg_secondary'])
+    popup.geometry("500x300")
+    popup.resizable(False, False)
+    popup.transient(root)
+    popup.grab_set()
+
+    popup.update_idletasks()
+    x = (popup.winfo_screenwidth() // 2) - (500 // 2)
+    y = (popup.winfo_screenheight() // 2) - (300 // 2)
+    popup.geometry(f"500x300+{x}+{y}")
+
+    frame = tk.Frame(popup, bg=COLORS['bg_secondary'])
+    frame.pack(fill="both", expand=True, padx=40, pady=40)
+
+    tk.Label(frame, text="✓ Role Confirmed", font=("Segoe UI", 13), bg=COLORS['bg_secondary'], fg=COLORS['success']).pack(pady=(0,10))
+    tk.Label(frame, text=role, font=("Segoe UI", 32, "bold"), bg=COLORS['bg_secondary'], fg=COLORS['text_primary']).pack(pady=10)
+    tk.Label(frame, text="Preparing your personalized dashboard...", font=("Segoe UI", 12), bg=COLORS['bg_secondary'], fg=COLORS['text_secondary']).pack(pady=(0,30))
+
+    def open_dashboard():
+        popup.destroy()
+        role_frame.pack_forget()
+        show_dashboard(role)
+
+    continue_btn = tk.Button(frame, text="Continue →", command=open_dashboard,
+                             font=("Segoe UI", 14, "bold"),
+                             bg=COLORS['accent'], fg=COLORS['text_primary'],
+                             activebackground=COLORS['accent_hover'],
+                             bd=0, relief="flat", cursor="hand2")
+    continue_btn.pack(fill="x", ipady=8)
+
+def show_dashboard(role):
+    dashboard_frame.pack(fill="both", expand=True)
     for widget in dashboard_frame.winfo_children():
         widget.destroy()
 
-    # Header with role and time
+    # Header
     header = tk.Frame(dashboard_frame, bg=COLORS['bg_secondary'], height=80)
     header.pack(fill="x")
     header.pack_propagate(False)
-    
     header_content = tk.Frame(header, bg=COLORS['bg_secondary'])
     header_content.pack(fill="both", expand=True, padx=60, pady=20)
-    
     tk.Label(header_content, text=f"{role} Dashboard", font=("Segoe UI", 26, "bold"),
              bg=COLORS['bg_secondary'], fg=COLORS['text_primary']).pack(side="left")
-    
     time_frame = tk.Frame(header_content, bg=COLORS['bg_secondary'])
     time_frame.pack(side="right")
-    
     tk.Label(time_frame, text=get_current_time(), font=("Segoe UI", 20, "bold"),
              bg=COLORS['bg_secondary'], fg=COLORS['accent']).pack(side="left", padx=(0,10))
-    
     tk.Label(time_frame, text="Online", font=("Segoe UI", 12),
              bg=COLORS['bg_secondary'], fg=COLORS['success']).pack(side="left")
 
-    # Main content area
+    # Main content
     content = tk.Frame(dashboard_frame, bg=COLORS['bg_primary'])
     content.pack(fill="both", expand=True, padx=60, pady=20)
 
-    # Metrics row
+    # Metrics
     metrics_frame = tk.Frame(content, bg=COLORS['bg_primary'])
-    metrics_frame.pack(fill="x", pady=(0, 20))
-
+    metrics_frame.pack(fill="x", pady=(0,20))
     if role == "Driver":
         create_metric_card(metrics_frame, "Today's Earnings", "€156.80", "+12% vs yesterday")
         create_metric_card(metrics_frame, "Trips Completed", "18", "2 hours online")
         create_metric_card(metrics_frame, "Avg Rating", "4.9★", "Last 50 trips")
         create_metric_card(metrics_frame, "Next Bonus", "2 trips", "Unlock €15")
-    else:  # Courier
+    else:
         create_metric_card(metrics_frame, "Today's Earnings", "€89.40", "+8% vs yesterday")
         create_metric_card(metrics_frame, "Deliveries", "24", "3 hours online")
         create_metric_card(metrics_frame, "Avg Rating", "4.8★", "Last 50 orders")
         create_metric_card(metrics_frame, "Next Bonus", "4 orders", "Unlock €12")
+
+    # Ride Score input
+    ride_frame = tk.Frame(content, bg=COLORS['bg_card'], pady=10, padx=10)
+    ride_frame.pack(fill="x", pady=(0,10))
+
+    tk.Label(ride_frame, text="Enter Ride Duration (minutes):", bg=COLORS['bg_card'],
+             fg=COLORS['text_primary'], font=("Segoe UI", 12)).pack(side="left", padx=(0,10))
+    entry_ride = tk.Entry(ride_frame, width=10, font=("Segoe UI", 12))
+    entry_ride.pack(side="left", padx=(0,10))
+
+    output_label_ride = tk.Label(ride_frame, text="", bg=COLORS['bg_card'], fg=COLORS['accent'],
+                                 font=("Segoe UI", 12, "bold"))
+    output_label_ride.pack(side="left", padx=(10,0))
+
+    def process_ride_input():
+        duration = entry_ride.get()
+        score = ride_score(duration)
+        output_label_ride.config(text=f"Score: {score}")
+
+    tk.Button(ride_frame, text="Calculate", command=process_ride_input,
+              bg=COLORS['accent'], fg=COLORS['text_primary'], font=("Segoe UI", 11, "bold")).pack(side="left", padx=(10,0))
+    
+        # Courier Net Earnings input
+    earnings_frame = tk.Frame(content, bg=COLORS['bg_card'], pady=10, padx=10)
+    earnings_frame.pack(fill="x", pady=(0,10))
+
+    tk.Label(earnings_frame, text="Predict Courier Trip Earnings:", bg=COLORS['bg_card'], fg=COLORS['text_primary'], font=("Segoe UI", 12)).grid(row=0, column=0, columnspan=2, sticky="w", pady=(0,5))
+
+    # Input fields
+    tk.Label(earnings_frame, text="City ID:", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=1, column=0, sticky="e", padx=(0,5))
+    entry_city = tk.Entry(earnings_frame, width=5)
+    entry_city.grid(row=1, column=1, sticky="w")
+
+    tk.Label(earnings_frame, text="Distance (km):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=2, column=0, sticky="e", padx=(0,5))
+    entry_distance = tk.Entry(earnings_frame, width=5)
+    entry_distance.grid(row=2, column=1, sticky="w")
+
+    tk.Label(earnings_frame, text="Duration (mins):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=3, column=0, sticky="e", padx=(0,5))
+    entry_duration = tk.Entry(earnings_frame, width=5)
+    entry_duration.grid(row=3, column=1, sticky="w")
+
+    tk.Label(earnings_frame, text="Start Hour (0–23.99):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=4, column=0, sticky="e", padx=(0,5))
+    entry_hour = tk.Entry(earnings_frame, width=5)
+    entry_hour.grid(row=4, column=1, sticky="w")
+
+    tk.Label(earnings_frame, text="Day of Week (0=Mon,6=Sun):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=5, column=0, sticky="e", padx=(0,5))
+    entry_day = tk.Entry(earnings_frame, width=5)
+    entry_day.grid(row=5, column=1, sticky="w")
+
+    # Output label
+    output_label_earnings = tk.Label(earnings_frame, text="", bg=COLORS['bg_card'], fg=COLORS['accent'], font=("Segoe UI", 12, "bold"))
+    output_label_earnings.grid(row=6, column=0, columnspan=2, pady=(10,0))
+
+    # Button to calculate
+    def process_earnings_input():
+        try:
+            city_id = int(entry_city.get())
+            distance_km = float(entry_distance.get())
+            duration_mins = float(entry_duration.get())
+            start_hour_cont = float(entry_hour.get())
+            day_of_week = int(entry_day.get())
+
+            model, _, _, _, _, bins = predict_net_earnings_courier()
+            predicted, rating = predict_new_trip(model, city_id, distance_km, duration_mins, start_hour_cont, day_of_week, bins)
+            output_label_earnings.config(text=f"Predicted Earnings: €{predicted:.2f}  |  Rating: {rating}/5")
+        except Exception as e:
+            output_label_earnings.config(text=f"Error: {e}")
+
+    tk.Button(earnings_frame, text="Predict", command=process_earnings_input,
+            bg=COLORS['accent'], fg=COLORS['text_primary'], font=("Segoe UI", 11, "bold")).grid(row=7, column=0, columnspan=2, pady=(5,0))
+
+
+
+    # # Recommended Jobs section
+    # jobs_frame = tk.Frame(content, bg=COLORS['bg_secondary'])
+    # jobs_frame.pack(fill="both", expand=True, pady=(0,10))
+    # tk.Label(jobs_frame, text="🎯 Recommended Jobs", font=("Segoe UI", 18, "bold"),
+    #          bg=COLORS['bg_secondary'], fg=COLORS['text_primary']).pack(padx=30, pady=10)
+
+    # columns = ("pickup", "dropoff", "distance", "fare", "weather", "score")
+    # tree = ttk.Treeview(jobs_frame, columns=columns, show="headings", height=5)
+    # for col in columns:
+    #     tree.heading(col, text=col.capitalize())
+    #     tree.column(col, width=120)
+    # for job in driver_jobs:
+    #     tree.insert("", "end", values=(job["pickup"], job["dropoff"], job["distance"],
+    #                                    job["fare"], job["weather"], job["score"]))
+    # tree.pack(fill="x", padx=20, pady=10)
 
     # Jobs section
     jobs_section = tk.Frame(content, bg=COLORS['bg_secondary'])
@@ -285,6 +362,63 @@ def show_dashboard(role):
              bg=COLORS['bg_card'], fg=COLORS['text_secondary'],
              wraplength=1000, justify="left").pack(anchor="w", padx=20, pady=(0, 15))
 
+
+
+
+
+# def show_dashboard(role):
+#     dashboard_frame.pack(fill="both", expand=True)
+#     for widget in dashboard_frame.winfo_children():
+#         widget.destroy()
+
+#     # Header
+#     header = tk.Frame(dashboard_frame, bg=COLORS['bg_secondary'], height=80)
+#     header.pack(fill="x")
+#     header.pack_propagate(False)
+#     header_content = tk.Frame(header, bg=COLORS['bg_secondary'])
+#     header_content.pack(fill="both", expand=True, padx=60, pady=20)
+#     tk.Label(header_content, text=f"{role} Dashboard", font=("Segoe UI", 26, "bold"), bg=COLORS['bg_secondary'], fg=COLORS['text_primary']).pack(side="left")
+#     time_frame = tk.Frame(header_content, bg=COLORS['bg_secondary'])
+#     time_frame.pack(side="right")
+#     tk.Label(time_frame, text=get_current_time(), font=("Segoe UI", 20, "bold"), bg=COLORS['bg_secondary'], fg=COLORS['accent']).pack(side="left", padx=(0,10))
+#     tk.Label(time_frame, text="Online", font=("Segoe UI", 12), bg=COLORS['bg_secondary'], fg=COLORS['success']).pack(side="left")
+
+#     # Main content
+#     content = tk.Frame(dashboard_frame, bg=COLORS['bg_primary'])
+#     content.pack(fill="both", expand=True, padx=60, pady=20)
+
+#     # Metrics
+#     metrics_frame = tk.Frame(content, bg=COLORS['bg_primary'])
+#     metrics_frame.pack(fill="x", pady=(0,20))
+#     if role == "Driver":
+#         create_metric_card(metrics_frame, "Today's Earnings", "€156.80", "+12% vs yesterday")
+#         create_metric_card(metrics_frame, "Trips Completed", "18", "2 hours online")
+#         create_metric_card(metrics_frame, "Avg Rating", "4.9★", "Last 50 trips")
+#         create_metric_card(metrics_frame, "Next Bonus", "2 trips", "Unlock €15")
+#     else:
+#         create_metric_card(metrics_frame, "Today's Earnings", "€89.40", "+8% vs yesterday")
+#         create_metric_card(metrics_frame, "Deliveries", "24", "3 hours online")
+#         create_metric_card(metrics_frame, "Avg Rating", "4.8★", "Last 50 orders")
+#         create_metric_card(metrics_frame, "Next Bonus", "4 orders", "Unlock €12")
+
+#     # Ride Score input
+#     ride_frame = tk.Frame(content, bg=COLORS['bg_card'], pady=10, padx=10)
+#     ride_frame.pack(fill="x", pady=(0,20))
+#     tk.Label(ride_frame, text="Enter Ride Duration (minutes):", bg=COLORS['bg_card'], fg=COLORS['text_primary'], font=("Segoe UI", 12)).pack(side="left", padx=(0,10))
+#     entry = tk.Entry(ride_frame, width=10, font=("Segoe UI", 12))
+#     entry.pack(side="left", padx=(0,10))
+#     output_label = tk.Label(ride_frame, text="", bg=COLORS['bg_card'], fg=COLORS['accent'], font=("Segoe UI", 12, "bold"))
+#     output_label.pack(side="left", padx=(10,0))
+#     def process_input():
+#         duration = entry.get()
+#         score = ride_score(duration)
+#         output_label.config(text=f"Score: {score}")
+#     tk.Button(ride_frame, text="Calculate", command=process_input, bg=COLORS['accent'], fg=COLORS['text_primary'], font=("Segoe UI", 11, "bold")).pack(side="left", padx=(10,0))
+
+    # Jobs section continues as your existing code...
+    # (Add the same job table, action buttons, and quick tips here)
+    # ... You can copy-paste your existing job table & action buttons code
+
 # ----------------- MAIN WINDOW ---------------- #
 root = tk.Tk()
 root.title("Smart Earner Assistant")
@@ -292,78 +426,45 @@ root.configure(bg=COLORS['bg_primary'])
 root.attributes('-fullscreen', True)
 root.bind("<Escape>", lambda e: root.quit())
 
-# ----------------- DESCRIPTION SCREEN ---------------- #
+# Description screen
 desc_frame = tk.Frame(root, bg=COLORS['bg_primary'])
 desc_frame.pack(fill="both", expand=True, padx=120, pady=40)
-
 desc_card = tk.Frame(desc_frame, bg=COLORS['bg_secondary'])
 desc_card.pack(fill="both", expand=True)
-
 desc_content = tk.Frame(desc_card, bg=COLORS['bg_secondary'])
 desc_content.pack(fill="both", expand=True, padx=60, pady=50)
-
-tk.Label(desc_content, text="Smart Earner Assistant",
-         font=("Segoe UI", 36, "bold"), bg=COLORS['bg_secondary'],
-         fg=COLORS['text_primary']).pack(pady=(0,10))
-
-tk.Label(desc_content, text="Professional Digital Co-Pilot for Uber Earners",
-         font=("Segoe UI", 15), bg=COLORS['bg_secondary'],
-         fg=COLORS['text_secondary']).pack(pady=(0,30))
-
-# Developer names
-tk.Label(desc_content, text="Anushka Patra  •  Tanisha Doshi  •  Nguyen Do",
-         font=("Segoe UI", 13, "bold"), bg=COLORS['bg_secondary'], fg=COLORS['accent']).pack(pady=(0,30))
-
-desc_text = (
-    "Optimize daily operations, maximize earnings, and enhance well-being through "
-    "predictive analytics and intelligent recommendations.\n\n"
-    "Key Capabilities:\n"
-    "• Real-time trip optimization and demand forecasting\n"
-    "• Personalized efficiency and earnings guidance\n"
-    "• Safety notifications and wellness monitoring\n"
-    "• AI-powered behavioral insights and earnings strategies\n\n"
-    "Work smarter, reduce idle time, and balance productivity with personal well-being."
-)
-
-tk.Label(desc_content, text=desc_text, font=("Segoe UI", 13),
-         wraplength=900, justify="left",
+tk.Label(desc_content, text="Smart Earner Assistant", font=("Segoe UI", 36, "bold"), bg=COLORS['bg_secondary'], fg=COLORS['text_primary']).pack(pady=(0,10))
+tk.Label(desc_content, text="Professional Digital Co-Pilot for Uber Earners", font=("Segoe UI", 15), bg=COLORS['bg_secondary'], fg=COLORS['text_secondary']).pack(pady=(0,30))
+tk.Label(desc_content, text="Anushka Patra  •  Tanisha Doshi  •  Nguyen Do", font=("Segoe UI", 13, "bold"), bg=COLORS['bg_secondary'], fg=COLORS['accent']).pack(pady=(0,30))
+desc_text = ("Optimize daily operations, maximize earnings, and enhance well-being through "
+             "predictive analytics and intelligent recommendations.\n\n"
+             "Key Capabilities:\n"
+             "• Real-time trip optimization and demand forecasting\n"
+             "• Personalized efficiency and earnings guidance\n"
+             "• Safety notifications and wellness monitoring\n"
+             "• AI-powered behavioral insights and earnings strategies\n\n"
+             "Work smarter, reduce idle time, and balance productivity with personal well-being.")
+tk.Label(desc_content, text=desc_text, font=("Segoe UI", 13), wraplength=900, justify="left",
          bg=COLORS['bg_secondary'], fg=COLORS['text_secondary']).pack(pady=(0,40))
+tk.Button(desc_content, text="Get Started →", command=show_role_selection, font=("Segoe UI", 15, "bold"), bg=COLORS['accent'], fg=COLORS['text_primary'], activebackground=COLORS['accent_hover'], bd=0, relief="flat", cursor="hand2").pack(fill="x", ipady=10)
 
-start_btn = tk.Button(desc_content, text="Get Started →", command=show_role_selection,
-          font=("Segoe UI", 15, "bold"),
-          bg=COLORS['accent'], fg=COLORS['text_primary'],
-          activebackground=COLORS['accent_hover'],
-          bd=0, relief="flat", cursor="hand2")
-start_btn.pack(fill="x", ipady=10)
-
-# ----------------- ROLE SELECTION SCREEN ---------------- #
+# Role selection screen
 role_frame = tk.Frame(root, bg=COLORS['bg_primary'])
-
 role_content = tk.Frame(role_frame, bg=COLORS['bg_primary'])
 role_content.place(relx=0.5, rely=0.5, anchor="center")
-
-tk.Label(role_content, text="Select Your Role",
-         bg=COLORS['bg_primary'], fg=COLORS['text_primary'],
-         font=("Segoe UI", 32, "bold")).pack(pady=(0, 10))
-
-tk.Label(role_content, text="Choose how you earn with Uber",
-         bg=COLORS['bg_primary'], fg=COLORS['text_secondary'],
-         font=("Segoe UI", 14)).pack(pady=(0, 50))
-
+tk.Label(role_content, text="Select Your Role", bg=COLORS['bg_primary'], fg=COLORS['text_primary'], font=("Segoe UI", 32, "bold")).pack(pady=(0,10))
+tk.Label(role_content, text="Choose how you earn with Uber", bg=COLORS['bg_primary'], fg=COLORS['text_secondary'], font=("Segoe UI", 14)).pack(pady=(0,50))
 driver_btn = create_hover_button(role_content, "Driver", lambda: select_role("Driver"), "🚗")
 driver_btn.pack(pady=15)
-
 courier_btn = create_hover_button(role_content, "Courier", lambda: select_role("Courier"), "🛵")
 courier_btn.pack(pady=15)
 
-# ----------------- DASHBOARD FRAME ---------------- #
+# Dashboard frame
 dashboard_frame = tk.Frame(root, bg=COLORS['bg_primary'])
 
-# ----------------- FOOTER ---------------- #
-footer = tk.Label(root, text="© 2025 Smart Earner Assistant  •  Built for Junction Hackathon",
-                  bg=COLORS['bg_primary'], fg=COLORS['text_muted'],
-                  font=("Segoe UI", 10))
+# Footer
+footer = tk.Label(root, text="© 2025 Smart Earner Assistant  •  Built for Junction Hackathon", bg=COLORS['bg_primary'], fg=COLORS['text_muted'], font=("Segoe UI", 10))
 footer.pack(side="bottom", pady=15)
 
-# ----------------- RUN ---------------- #
+# Run
 root.mainloop()
