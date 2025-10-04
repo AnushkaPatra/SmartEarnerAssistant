@@ -244,7 +244,7 @@ def show_dashboard(role):
     entry_duration = tk.Entry(earnings_frame, width=5, font=("Segoe UI", 10))
     entry_duration.pack(side="left", padx=(0,8))
 
-    tk.Label(earnings_frame, text="Hour:", bg=COLORS['bg_card'], fg=COLORS['text_secondary'],
+    tk.Label(earnings_frame, text="Start hour of journey:", bg=COLORS['bg_card'], fg=COLORS['text_secondary'],
             font=("Segoe UI", 10)).pack(side="left", padx=(0,3))
     entry_hour = tk.Entry(earnings_frame, width=5, font=("Segoe UI", 10))
     entry_hour.pack(side="left", padx=(0,8))
