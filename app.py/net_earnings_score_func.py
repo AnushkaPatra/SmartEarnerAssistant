@@ -22,7 +22,9 @@ X_train_courier, X_test_courier, Y_train_courier, Y_test_courier = train_test_sp
     x_courier, y_courier, test_size=0.3, random_state=42
 )
 
+
 def predict_net_earnings_courier():
+    pass
     
 def predict_net_earnings_rides():
     rides_trips_data["start_time"] = pd.to_datetime(rides_trips_data["start_time"])
@@ -56,4 +58,4 @@ def predict_net_earnings_rides():
     print(f"  RMSE: {rmse:.2f}")
     print(f"  R² Score: {r2:.2f}")
 
-return model, X_test, y_test, y_pred
+    return model, X_test, y_test, y_pred

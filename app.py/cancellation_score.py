@@ -14,10 +14,11 @@ def calculate_city_score():
     # csv["hexagon_to_int"] = csv["hexagon_id9"].apply(lambda x: int(x, 16))
     # locations = csv["hexagon_to_int"]
     # rates = csv["actual_rates"]
+    rates = csv["cancellation_rate_pct"]
 
-    average = np.average[csv["cancellation_rate_pct"]]
+    average_lvl = np.average[rates] / 5
 
-    cities = csv["city_id"]
+    csv["labels"] = np.where(rates <= average_lvl, 5, rates)
     mean_ratings = csv.groupby("city_id")["cancellation_rate_pct"].mean()
     
 
