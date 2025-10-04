@@ -46,7 +46,8 @@ def calculate(city_id, datafile):
     score = getScore(prediction, cancellation_rates)
     return score
     
+def score_for_userinput(city_id):
+    return calculate(city_id, pd.read_csv(r"..\resources\cancellation_rates.csv"))
 
-file = pd.read_csv(r"..\resources\cancellation_rates.csv")
-for i in range(6):
-    calculate(i, file)
+# for i in range(6):
+#     calculate(i, pd.read_csv(r"..\resources\cancellation_rates.csv"))
