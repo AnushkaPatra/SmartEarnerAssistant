@@ -32,6 +32,8 @@ def predict_net_earnings_courier():
     pass
     
 def predict_net_earnings_rides():
+    main.rides_trips_data = main.rides_trips_data.sample(10, random_state=42)
+
 
     # Extract continuous features from start_time
     main.rides_trips_data["start_time"] = main.pd.to_datetime(main.rides_trips_data["start_time"])
@@ -39,8 +41,10 @@ def predict_net_earnings_rides():
     main.rides_trips_data["day_of_week"] = main.rides_trips_data["start_time"].dt.dayofweek  
 
     # Features and target
-    X_rides = main.rides_trips_data[["city_id", "start_hour_cont", "day_of_week", "distance_km", "duration_mins", "surge_multiplier"]]
+    X_rides = main.rides_trips_data[["city_id", "distance_km", "duration_mins", "surge_multiplier"]]
     y_rides = main.rides_trips_data["net_earnings"]
+
+
 
     # Train-test split
     X_train, X_test, y_train, y_test = main.train_test_split(
@@ -54,6 +58,8 @@ def predict_net_earnings_rides():
     # Predictions
     y_pred = model.predict(X_test)
 
-    print (y_pred)
+    print(y_pred[:10])
     
     return model, X_test, y_test, y_pred
+
+predict_net_earnings_rides()

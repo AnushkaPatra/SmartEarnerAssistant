@@ -1,15 +1,15 @@
 import pandas as pd
 import gradio as gr
 import numpy as np
-from transformers import pipeline #Install these libraries again on host computer
+#from transformers import pipeline #Install these libraries again on host computer
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 
-user_input = input()
-generator = pipeline("text-generation", model = "gpt-neo-125M")
-output = generator(user_input, max_length = 50)
+#user_input = input()
+# generator = pipeline("text-generation", model = "gpt-neo-125M")
+# output = generator(user_input, max_length = 50)
 
 earners_data = pd.read_csv("earners.csv")
 cancellation_rates_data = pd.read_csv("cancellation_rates.csv")
@@ -38,3 +38,7 @@ def calculate_overall_recommendation_score():
     ]
 
     return sum(recommendation_scores) / len(recommendation_scores)
+
+if __name__ == "__main__":
+    print("4")
+

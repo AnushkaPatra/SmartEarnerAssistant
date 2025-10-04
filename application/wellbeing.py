@@ -1,2 +1,4 @@
 def calculate_driver_wellbeing_score():
-    return
+    print(5)
+
+calculate_driver_wellbeing_score()
