@@ -28,7 +28,7 @@ def predict_net_earnings_rides():
     rides_sample["day_of_week"] = rides_sample["start_time"].dt.dayofweek  
 
     # Features and target
-    X_rides = rides_sample[["city_id", "distance_km", "duration_mins", "surge_multiplier"]]
+    X_rides = rides_sample[["city_id", "distance_km", "duration_mins"]]
     y_rides = rides_sample["net_earnings"]
 
     # Train-test split
@@ -55,10 +55,36 @@ def predict_net_earnings_rides():
     y_pred_scaled = np.clip(y_pred_scaled, 1, 5)
     print(y_pred_scaled)
     
-    return model, X_test, y_test, y_pred, y_pred_scaled
+    return model, X_test, y_test, y_pred, y_pred_scaled, bins
 
+def predict_new_ride(model, city_id, distance_km, duration_mins, bins):
+    """
+    Predicts net earnings and its 1–5 rating using the precomputed bins.
+    """
+    new_data = pd.DataFrame([{
+        "city_id": city_id,
+        "distance_km": distance_km,
+        "duration_mins": duration_mins
+    }])
 
-result = predict_net_earnings_rides()
+    predicted_earnings = model.predict(new_data)[0]
+    scaled_rating = np.digitize([predicted_earnings], bins, right=True)
+    scaled_rating = int(np.clip(scaled_rating, 1, 5))
+
+    print(f"Predicted Net Earnings: {predicted_earnings:.2f}")
+    print(f"Earnings Rating (1/–5): {scaled_rating}")
+
+    return predicted_earnings, scaled_rating
+
+model, _, _, _, _, bins = predict_net_earnings_rides()
+
+predict_new_ride(
+    model,
+    city_id=2,
+    distance_km=6.8,
+    duration_mins=22.5,
+    bins=bins
+)
 
 # import os
 # import pandas as pd

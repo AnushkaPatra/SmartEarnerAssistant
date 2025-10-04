@@ -54,10 +54,41 @@ def predict_net_earnings_courier():
     # Ensure values are within 1-5
     y_pred_scaled = np.clip(y_pred_scaled, 1, 5)
     print(y_pred_scaled)
-    return model, X_test, y_test, y_pred, y_pred_scaled
+    return model, X_test, y_test, y_pred, y_pred_scaled, bins
 
+def predict_new_trip(model, city_id, distance_km, duration_mins, start_hour_cont, day_of_week, bins):
+    """
+    Predicts net earnings and its 1–5 rating using the precomputed bins.
+    """
+    new_data = pd.DataFrame([{
+        "city_id": city_id,
+        "distance_km": distance_km,
+        "duration_mins": duration_mins,
+        "start_hour_cont": start_hour_cont,
+        "day_of_week": day_of_week
+    }])
 
-predict_net_earnings_courier()
+    predicted_earnings = model.predict(new_data)[0]
+    scaled_rating = np.digitize([predicted_earnings], bins, right=True)
+    scaled_rating = int(np.clip(scaled_rating, 1, 5))
+
+    print(f"Predicted Net Earnings: {predicted_earnings:.2f}")
+    print(f"Earnings Rating (1–5): {scaled_rating}")
+
+    return predicted_earnings, scaled_rating
+
+model, _, _, _, _, bins = predict_net_earnings_courier()
+
+predict_new_trip(
+    model,
+    city_id=2,
+    distance_km=6.8,
+    duration_mins=22.5,
+    start_hour_cont=13.5,  # 1:30 PM
+    day_of_week=5,         # Saturday
+    bins=bins
+)
+
 
 # import os
 # import pandas as pd
