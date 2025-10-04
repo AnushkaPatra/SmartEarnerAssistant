@@ -1,6 +1,4 @@
-import numpy as np
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
+import main
 import random
 from sklearn.metrics import mean_squared_error
 
@@ -10,17 +8,17 @@ def cancellation_score(cancellation_rate, file): # file data
 
     rates = file["cancellation_rate_pct"]
 
-    rate_level = np.average[rates] / 5 # to determine the label of the rate between 1 and 5
+    rate_level = main.np.average[rates] / 5 # to determine the label of the rate between 1 and 5
 
-    labels = np.where(rates <= rate_level, 5, rates)
-    labels = np.where(rates <= rate_level*2, 4, rates)
-    labels = np.where(rates <= rate_level*3, 3, rates)
-    labels = np.where(rates <= rate_level*4, 2, rates)
-    labels = np.where(rates > rate_level*4, 1, rates)
+    labels = main.np.where(rates <= rate_level, 5, rates)
+    labels = main.np.where(rates <= rate_level*2, 4, rates)
+    labels = main.np.where(rates <= rate_level*3, 3, rates)
+    labels = main.np.where(rates <= rate_level*4, 2, rates)
+    labels = main.np.where(rates > rate_level*4, 1, rates)
     
 
-    X_train, Y_train, X_test, Y_test = train_test_split(rates, labels, test_size=0.3, random_state=random.random())
-    linear_regression_model = LinearRegression()
+    X_train, Y_train, X_test, Y_test = main.train_test_split(rates, labels, test_size=0.3, random_state=random.random())
+    linear_regression_model = main.LinearRegression()
     linear_regression_model.fit(X_train, Y_train)
 
     predictions = linear_regression_model.predict(X_test)

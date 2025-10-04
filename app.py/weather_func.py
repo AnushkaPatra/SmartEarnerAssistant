@@ -1,7 +1,7 @@
 import main
 
 def calculate_weather_score():
-    weather = data['weather']
+    weather = main.weather_data['weather']
     
     if weather == "clear":
         weather_idx = 0
@@ -10,4 +10,4 @@ def calculate_weather_score():
     else:
         weather_idx = 2 
 
-    return
+    return weather_idx
