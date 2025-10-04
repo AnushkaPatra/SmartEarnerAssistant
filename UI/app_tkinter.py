@@ -13,7 +13,7 @@ sys.path.insert(0, parent_dir)
 from application.wellbeing import ride_score
 from application.net_earnings_courier import predict_new_trip
 from application.net_earnings_courier import predict_net_earnings_courier
-
+from application.cancellation import score_for_userinput
 
 
 # ---------------- CONFIGURATION ---------------- #
@@ -291,6 +291,31 @@ def show_dashboard(role):
     #     tree.insert("", "end", values=(job["pickup"], job["dropoff"], job["distance"],
     #                                    job["fare"], job["weather"], job["score"]))
     # tree.pack(fill="x", padx=20, pady=10)
+
+    # Cancellation Rating input
+    cancel_frame = tk.Frame(content, bg=COLORS['bg_card'], pady=10, padx=10)
+    cancel_frame.pack(fill="x", pady=(0,10))
+
+    tk.Label(cancel_frame, text="Enter City ID:", bg=COLORS['bg_card'],
+            fg=COLORS['text_primary'], font=("Segoe UI", 12)).pack(side="left", padx=(0,10))
+    entry_city_id = tk.Entry(cancel_frame, width=10, font=("Segoe UI", 12))
+    entry_city_id.pack(side="left", padx=(0,10))
+
+    output_label_cancel = tk.Label(cancel_frame, text="", bg=COLORS['bg_card'], fg=COLORS['accent'],
+                                font=("Segoe UI", 12, "bold"))
+    output_label_cancel.pack(side="left", padx=(10,0))
+
+    def process_cancel_input():
+        try:
+            city_id = int(entry_city_id.get())
+            rating = score_for_userinput(city_id)
+            output_label_cancel.config(text=f"Cancellation Rating: {rating}/5")
+        except Exception as e:
+            output_label_cancel.config(text=f"Error: {e}")
+
+    tk.Button(cancel_frame, text="Calculate", command=process_cancel_input,
+            bg=COLORS['accent'], fg=COLORS['text_primary'], font=("Segoe UI", 11, "bold")).pack(side="left", padx=(10,0))
+
 
     # Jobs section
     jobs_section = tk.Frame(content, bg=COLORS['bg_secondary'])

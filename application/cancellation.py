@@ -1,8 +1,17 @@
+import os
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 import numpy as np
 import pandas as pd
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Build path relative to the script location
+csv_path = os.path.join(script_dir, "..", "resources", "cancellation_rates.csv")
+
+
+cancellation_data = pd.read_csv(csv_path)
 
 def mapToScore(rate, max_rate, min_rate, upper_bound, lower_bound):
     score = -1
@@ -38,16 +47,17 @@ def calculate_cancellation_rate(city_id, cancellation_rates, city_ids):
 
     return y_pred
 
-def calculate(city_id, datafile):
-    cancellation_rates = np.array(datafile["cancellation_rate_pct"])
-    city_ids = np.array(datafile["city_id"])
+def calculate(city_id):
+    cancellation_rates = np.array(cancellation_data["cancellation_rate_pct"])
+    city_ids = np.array(cancellation_data["city_id"])
 
     prediction = calculate_cancellation_rate(city_id, cancellation_rates, city_ids)
-    score = getScore(prediction, cancellation_rates)
+    score = round(getScore(prediction, cancellation_rates), 2)
+
     return score
     
 def score_for_userinput(city_id):
-    return calculate(city_id, pd.read_csv(r"..\resources\cancellation_rates.csv"))
+    return calculate(city_id)
 
 # for i in range(6):
 #     calculate(i, pd.read_csv(r"..\resources\cancellation_rates.csv"))
