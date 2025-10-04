@@ -1,5 +1,5 @@
 import main
-
+# Determine what exactly it needs to do and itirate over it needs to
 def calculate_weather_score():
     weather = main.weather_data['weather']
     

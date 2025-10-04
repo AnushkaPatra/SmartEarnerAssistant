@@ -3,7 +3,7 @@ import main
 def calculate_time_of_day_score():  # Nehir
 
     X = ['city_id', 'hour', 'surge_multiplier']
-    y = ['score']
+    y = ['score']   # Add a 'score' column to Google Sheets + Add the 'time_of_day' 
 
     train_df, test_df = main.train_test_split(main.time_of_day_score_data, test_size = 0.3, random_state = 42)
 
