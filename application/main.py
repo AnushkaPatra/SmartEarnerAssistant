@@ -5,6 +5,7 @@ from transformers import pipeline #Install these libraries again on host compute
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
+import matplotlib.pyplot as plt
 
 user_input = input()
 generator = pipeline("text-generation", model = "gpt-neo-125M")
