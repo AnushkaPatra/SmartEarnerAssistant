@@ -1,4 +1,2 @@
 # SmartEarnerAssistant
-Junction X Delft Hackathon Event 
-
-Hi Anushka!!
+Junction X Delft Hackathon Event
