@@ -11,13 +11,13 @@ np.set_printoptions(threshold=np.inf)
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Build path relative to the script location
-csv_path = os.path.join(script_dir, "..", "resources", "rides_trips.csv")
+csv_path = os.path.join(script_dir, "..", "resources", "courier_trips.csv")
 
 
 rides_trips_data = pd.read_csv(csv_path)
 
 
-def predict_net_earnings_rides():
+def predict_net_earnings_courier():
     
     # Sample the data
     rides_sample = rides_trips_data.copy()
@@ -28,7 +28,7 @@ def predict_net_earnings_rides():
     rides_sample["day_of_week"] = rides_sample["start_time"].dt.dayofweek  
 
     # Features and target
-    X_rides = rides_sample[["city_id", "distance_km", "duration_mins", "surge_multiplier"]]
+    X_rides = rides_sample[["city_id", "distance_km", "duration_mins", "start_hour_cont", "day_of_week"]]
     y_rides = rides_sample["net_earnings"]
 
     # Train-test split
@@ -54,11 +54,10 @@ def predict_net_earnings_rides():
     # Ensure values are within 1-5
     y_pred_scaled = np.clip(y_pred_scaled, 1, 5)
     print(y_pred_scaled)
-    
     return model, X_test, y_test, y_pred, y_pred_scaled
 
 
-result = predict_net_earnings_rides()
+predict_net_earnings_courier()
 
 # import os
 # import pandas as pd
