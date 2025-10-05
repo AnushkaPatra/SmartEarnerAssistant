@@ -454,7 +454,7 @@ def show_dashboard(role):
         create_action_button(action_frame, "⚙️ Settings", lambda: None).pack(side="left")
         
         # Go offline button on right
-        offline_btn = create_action_button(action_frame, "● Go Offline", lambda: None, COLORS['text_muted'])
+        offline_btn = create_action_button(action_frame, "● Go Offline", go_offline, COLORS['text_muted'])
         offline_btn.pack(side="right")
 
     # Quick tips section
