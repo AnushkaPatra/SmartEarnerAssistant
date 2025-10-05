@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 
-# --- 1. Train the weather model ---
+#train
 def train_weather_model():
 
     # Get the directory where THIS script is located
@@ -43,7 +43,6 @@ def train_weather_model():
 
     return model
 
-# --- 2. Convert weather label to score ---
 def decide_weather_score(weather_label):
     if weather_label == "clear":
         return 5
@@ -54,7 +53,6 @@ def decide_weather_score(weather_label):
     else:
         return 2
 
-# --- 3. Predict weather for a city and return score ---
 def get_city_weather_score(model, city_id):
     # Create DataFrame with same column name used for training
     city_df = pd.DataFrame({"city_id": [city_id]})
@@ -70,7 +68,7 @@ def get_city_weather_score(model, city_id):
     score = decide_weather_score(weather_label)
     return score
 
-# --- Example usage ---
+#example
 if __name__ == "__main__":
     # Train the model once
     model = train_weather_model()

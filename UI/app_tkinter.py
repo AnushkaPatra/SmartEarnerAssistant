@@ -17,7 +17,7 @@ from application.cancellation import score_for_userinput
 from application.weather import train_weather_model, get_city_weather_score
 
 
-# ---------------- CONFIGURATION ---------------- #
+# ---------------- CONFIG ---------------- #
 COLORS = {
     'bg_primary': '#0A0A0A',
     'bg_secondary': '#1A1A1A',
@@ -32,7 +32,7 @@ COLORS = {
     'info': '#3B82F6'
 }
 
-# Sample dynamic job data
+#sample jobs 
 driver_jobs = [
     {"pickup": "Helsinki Central", "dropoff": "Espoo Mall", "distance": "12 km", "fare": "€18.50", "weather": "☁️ Cloudy", "score": 85},
     {"pickup": "Airport", "dropoff": "City Center", "distance": "18 km", "fare": "€28.00", "weather": "🌧️ Rain", "score": 92},
@@ -45,10 +45,11 @@ courier_jobs = [
     {"restaurant": "Burger Hub", "address": "Kamppi Center", "distance": "4.5 km", "fee": "€9.80", "weather": "☀️ Clear", "score": 82},
 ]
 
-# ---------------- UTILITY FUNCTIONS ---------------- #
+#live time
 def get_current_time():
     return datetime.datetime.now().strftime("%H:%M")
 
+#displays jobs 
 def create_metric_card(parent, title, value, subtitle=""):
     card = tk.Frame(parent, bg=COLORS['bg_card'], highlightbackground=COLORS['text_muted'], highlightthickness=1)
     card.pack(side="left", padx=10, fill="both", expand=True)
@@ -78,12 +79,9 @@ def create_hover_button(parent, text, command, icon=""):
     btn.bind("<Leave>", lambda e: btn.config(bg=COLORS['bg_card']))
     return btn
 
-# ---------------- MAIN FUNCTIONS ---------------- #
 def show_role_selection():
     desc_frame.pack_forget()
     role_frame.pack(fill="both", expand=True)
-
-
 
 def select_role(role):
     popup = tk.Toplevel(root)
@@ -182,56 +180,7 @@ def show_dashboard(role):
     tk.Button(ride_frame, text="Calculate", command=process_ride_input,
               bg=COLORS['accent'], fg=COLORS['text_primary'], font=("Segoe UI", 11, "bold")).pack(side="left", padx=(10,0))
     
-        # Courier Net Earnings input
-    # earnings_frame = tk.Frame(content, bg=COLORS['bg_card'], pady=10, padx=10)
-    # earnings_frame.pack(fill="x", pady=(0,10))
-
-    #tk.Label(earnings_frame, text="Predict Courier Trip Earnings:", bg=COLORS['bg_card'], fg=COLORS['text_primary'], font=("Segoe UI", 12)).grid(row=0, column=0, columnspan=2, sticky="w", pady=(0,5))
-
-    # # Input fields
-    # tk.Label(earnings_frame, text="City ID:", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=1, column=0, sticky="e", padx=(0,5))
-    # entry_city = tk.Entry(earnings_frame, width=5)
-    # entry_city.grid(row=1, column=1, sticky="w")
-
-    # tk.Label(earnings_frame, text="Distance (km):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=2, column=0, sticky="e", padx=(0,5))
-    # entry_distance = tk.Entry(earnings_frame, width=5)
-    # entry_distance.grid(row=2, column=1, sticky="w")
-
-    # tk.Label(earnings_frame, text="Duration (mins):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=3, column=0, sticky="e", padx=(0,5))
-    # entry_duration = tk.Entry(earnings_frame, width=5)
-    # entry_duration.grid(row=3, column=1, sticky="w")
-
-    # tk.Label(earnings_frame, text="Start Hour (0–23.99):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=4, column=0, sticky="e", padx=(0,5))
-    # entry_hour = tk.Entry(earnings_frame, width=5)
-    # entry_hour.grid(row=4, column=1, sticky="w")
-
-    # tk.Label(earnings_frame, text="Day of Week (0=Mon,6=Sun):", bg=COLORS['bg_card'], fg=COLORS['text_primary']).grid(row=5, column=0, sticky="e", padx=(0,5))
-    # entry_day = tk.Entry(earnings_frame, width=5)
-    # entry_day.grid(row=5, column=1, sticky="w")
-
-    # # Output label
-    # output_label_earnings = tk.Label(earnings_frame, text="", bg=COLORS['bg_card'], fg=COLORS['accent'], font=("Segoe UI", 12, "bold"))
-    # output_label_earnings.grid(row=6, column=0, columnspan=2, pady=(10,0))
-
-    # # Button to calculate
-    # def process_earnings_input():
-    #     try:
-    #         city_id = int(entry_city.get())
-    #         distance_km = float(entry_distance.get())
-    #         duration_mins = float(entry_duration.get())
-    #         start_hour_cont = float(entry_hour.get())
-    #         day_of_week = int(entry_day.get())
-
-    #         model, _, _, _, _, bins = predict_net_earnings_courier()
-    #         predicted, rating = predict_new_trip(model, city_id, distance_km, duration_mins, start_hour_cont, day_of_week, bins)
-    #         output_label_earnings.config(text=f"Predicted Earnings: €{predicted:.2f}  |  Rating: {rating}/5")
-    #     except Exception as e:
-    #         output_label_earnings.config(text=f"Error: {e}")
-
-    # tk.Button(earnings_frame, text="Predict", command=process_earnings_input,
-    #         bg=COLORS['accent'], fg=COLORS['text_primary'], font=("Segoe UI", 11, "bold")).grid(row=7, column=0, columnspan=2, pady=(5,0))
-
-    # Courier Net Earnings input - Single line layout
+    #earnings input
     earnings_frame = tk.Frame(content, bg=COLORS['bg_card'], pady=10, padx=10)
     earnings_frame.pack(fill="x", pady=(0,10))
 
@@ -239,7 +188,7 @@ def show_dashboard(role):
             fg=COLORS['text_primary'], font=("Segoe UI", 12)).pack(side="left", padx=(0,10))
 
     tk.Label(earnings_frame, text="City:", bg=COLORS['bg_card'], fg=COLORS['text_secondary'], 
-            font=("Segoe UI", 10)).pack(side="left", padx=(0,3))
+          font=("Segoe UI", 10)).pack(side="left", padx=(0,3))
     entry_city = tk.Entry(earnings_frame, width=5, font=("Segoe UI", 10))
     entry_city.pack(side="left", padx=(0,8))
 
@@ -285,21 +234,6 @@ def show_dashboard(role):
     tk.Button(earnings_frame, text="Predict", command=process_earnings_input,
             bg=COLORS['accent'], fg=COLORS['text_primary'], 
             font=("Segoe UI", 11, "bold")).pack(side="left", padx=(10,0))
-    # # Recommended Jobs section
-    # jobs_frame = tk.Frame(content, bg=COLORS['bg_secondary'])
-    # jobs_frame.pack(fill="both", expand=True, pady=(0,10))
-    # tk.Label(jobs_frame, text="🎯 Recommended Jobs", font=("Segoe UI", 18, "bold"),
-    #          bg=COLORS['bg_secondary'], fg=COLORS['text_primary']).pack(padx=30, pady=10)
-
-    # columns = ("pickup", "dropoff", "distance", "fare", "weather", "score")
-    # tree = ttk.Treeview(jobs_frame, columns=columns, show="headings", height=5)
-    # for col in columns:
-    #     tree.heading(col, text=col.capitalize())
-    #     tree.column(col, width=120)
-    # for job in driver_jobs:
-    #     tree.insert("", "end", values=(job["pickup"], job["dropoff"], job["distance"],
-    #                                    job["fare"], job["weather"], job["score"]))
-    # tree.pack(fill="x", padx=20, pady=10)
 
     # Cancellation Rating input
     cancel_frame = tk.Frame(content, bg=COLORS['bg_card'], pady=10, padx=10)
@@ -325,7 +259,7 @@ def show_dashboard(role):
     tk.Button(cancel_frame, text="Calculate", command=process_cancel_input,
             bg=COLORS['accent'], fg=COLORS['text_primary'], font=("Segoe UI", 11, "bold")).pack(side="left", padx=(10,0))
 
-    # --- Weather Score Input ---
+    #Weather Score Input
     weather_frame = tk.Frame(content, bg=COLORS['bg_card'], pady=10, padx=10)
     weather_frame.pack(fill="x", pady=(0,10))
 
@@ -341,7 +275,7 @@ def show_dashboard(role):
     def process_weather_input():
         try:
             city_id = int(entry_weather_city.get())
-            model = train_weather_model()  # Train or load the model
+            model = train_weather_model() 
             score = get_city_weather_score(model, city_id)
             output_label_weather.config(text=f"🌤 Weather Rating: {round(score, 2)}/5")
         except Exception as e:
@@ -436,7 +370,6 @@ def show_dashboard(role):
 
     tree.pack(fill="both", expand=True)
 
-    # Action buttons
     action_frame = tk.Frame(jobs_section, bg=COLORS['bg_secondary'])
     action_frame.pack(fill="x", padx=30, pady=(10, 20))
 
@@ -453,7 +386,6 @@ def show_dashboard(role):
         create_action_button(action_frame, "📊 Peak Hours", lambda: None).pack(side="left", padx=(0, 10))
         create_action_button(action_frame, "⚙️ Settings", lambda: None).pack(side="left")
         
-        # Go offline button on right
         offline_btn = create_action_button(action_frame, "● Go Offline", go_offline, COLORS['text_muted'])
         offline_btn.pack(side="right")
 
@@ -473,61 +405,6 @@ def show_dashboard(role):
              bg=COLORS['bg_card'], fg=COLORS['text_secondary'],
              wraplength=1000, justify="left").pack(anchor="w", padx=20, pady=(0, 15))
 
-
-
-# def show_dashboard(role):
-#     dashboard_frame.pack(fill="both", expand=True)
-#     for widget in dashboard_frame.winfo_children():
-#         widget.destroy()
-
-#     # Header
-#     header = tk.Frame(dashboard_frame, bg=COLORS['bg_secondary'], height=80)
-#     header.pack(fill="x")
-#     header.pack_propagate(False)
-#     header_content = tk.Frame(header, bg=COLORS['bg_secondary'])
-#     header_content.pack(fill="both", expand=True, padx=60, pady=20)
-#     tk.Label(header_content, text=f"{role} Dashboard", font=("Segoe UI", 26, "bold"), bg=COLORS['bg_secondary'], fg=COLORS['text_primary']).pack(side="left")
-#     time_frame = tk.Frame(header_content, bg=COLORS['bg_secondary'])
-#     time_frame.pack(side="right")
-#     tk.Label(time_frame, text=get_current_time(), font=("Segoe UI", 20, "bold"), bg=COLORS['bg_secondary'], fg=COLORS['accent']).pack(side="left", padx=(0,10))
-#     tk.Label(time_frame, text="Online", font=("Segoe UI", 12), bg=COLORS['bg_secondary'], fg=COLORS['success']).pack(side="left")
-
-#     # Main content
-#     content = tk.Frame(dashboard_frame, bg=COLORS['bg_primary'])
-#     content.pack(fill="both", expand=True, padx=60, pady=20)
-
-#     # Metrics
-#     metrics_frame = tk.Frame(content, bg=COLORS['bg_primary'])
-#     metrics_frame.pack(fill="x", pady=(0,20))
-#     if role == "Driver":
-#         create_metric_card(metrics_frame, "Today's Earnings", "€156.80", "+12% vs yesterday")
-#         create_metric_card(metrics_frame, "Trips Completed", "18", "2 hours online")
-#         create_metric_card(metrics_frame, "Avg Rating", "4.9★", "Last 50 trips")
-#         create_metric_card(metrics_frame, "Next Bonus", "2 trips", "Unlock €15")
-#     else:
-#         create_metric_card(metrics_frame, "Today's Earnings", "€89.40", "+8% vs yesterday")
-#         create_metric_card(metrics_frame, "Deliveries", "24", "3 hours online")
-#         create_metric_card(metrics_frame, "Avg Rating", "4.8★", "Last 50 orders")
-#         create_metric_card(metrics_frame, "Next Bonus", "4 orders", "Unlock €12")
-
-#     # Ride Score input
-#     ride_frame = tk.Frame(content, bg=COLORS['bg_card'], pady=10, padx=10)
-#     ride_frame.pack(fill="x", pady=(0,20))
-#     tk.Label(ride_frame, text="Enter Ride Duration (minutes):", bg=COLORS['bg_card'], fg=COLORS['text_primary'], font=("Segoe UI", 12)).pack(side="left", padx=(0,10))
-#     entry = tk.Entry(ride_frame, width=10, font=("Segoe UI", 12))
-#     entry.pack(side="left", padx=(0,10))
-#     output_label = tk.Label(ride_frame, text="", bg=COLORS['bg_card'], fg=COLORS['accent'], font=("Segoe UI", 12, "bold"))
-#     output_label.pack(side="left", padx=(10,0))
-#     def process_input():
-#         duration = entry.get()
-#         score = ride_score(duration)
-#         output_label.config(text=f"Score: {score}")
-#     tk.Button(ride_frame, text="Calculate", command=process_input, bg=COLORS['accent'], fg=COLORS['text_primary'], font=("Segoe UI", 11, "bold")).pack(side="left", padx=(10,0))
-
-    # Jobs section continues as your existing code...
-    # (Add the same job table, action buttons, and quick tips here)
-    # ... You can copy-paste your existing job table & action buttons code
-
 # ----------------- MAIN WINDOW ---------------- #
 root = tk.Tk()
 root.title("Smart Earner Assistant")
@@ -544,18 +421,12 @@ desc_card.pack(fill="both", expand=True)
 desc_content = tk.Frame(desc_card, bg=COLORS['bg_secondary'])
 desc_content.pack(fill="both", expand=True, padx=60, pady=50)
 
-# Get the directory where THIS script is located
+#logo
 script_dir = os.path.dirname(os.path.abspath(__file__))
-
-# Build path relative to the script location
 app_logo = os.path.join(script_dir, "..", "assets", "UberMateLogo.png")
-
-# Open and resize the image
 logo = Image.open(app_logo)
 logo = logo.resize((400, 120), Image.Resampling.LANCZOS)
 logo_tk = ImageTk.PhotoImage(logo)
-
-# Use the logo instead of text
 logo_label = tk.Label(desc_content, image=logo_tk, bg=COLORS['bg_secondary'])
 logo_label.pack(pady=(0, 10))
 
@@ -587,9 +458,9 @@ courier_btn.pack(pady=15)
 # Dashboard frame
 dashboard_frame = tk.Frame(root, bg=COLORS['bg_primary'])
 
-# Footer
+
 footer = tk.Label(root, text="© 2025 Smart Earner Assistant  •  Built with the help of ChatGPT (OpenAI)  for Junction Hackathon", bg=COLORS['bg_primary'], fg=COLORS['text_muted'], font=("Segoe UI", 12))
 footer.pack(side="bottom", pady=15)
 
-# Run
+# run
 root.mainloop()

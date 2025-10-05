@@ -10,7 +10,7 @@ def ride_score(duration):
 
     """
     try:
-        duration = float(duration)  # Convert string to float
+        duration = float(duration) 
     except ValueError:
         return "Invalid input"
     
