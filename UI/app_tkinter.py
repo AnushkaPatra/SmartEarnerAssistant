@@ -14,6 +14,7 @@ from application.wellbeing import ride_score
 from application.net_earnings_courier import predict_new_trip
 from application.net_earnings_courier import predict_net_earnings_courier
 from application.cancellation import score_for_userinput
+from application.weather import train_weather_model, get_city_weather_score
 
 
 # ---------------- CONFIGURATION ---------------- #
@@ -82,6 +83,8 @@ def show_role_selection():
     desc_frame.pack_forget()
     role_frame.pack(fill="both", expand=True)
 
+
+
 def select_role(role):
     popup = tk.Toplevel(root)
     popup.configure(bg=COLORS['bg_secondary'])
@@ -113,6 +116,12 @@ def select_role(role):
                              activebackground=COLORS['accent_hover'],
                              bd=0, relief="flat", cursor="hand2")
     continue_btn.pack(fill="x", ipady=8)
+
+def go_offline():
+    """Return to main description screen."""
+    dashboard_frame.pack_forget()
+    desc_frame.pack(fill="both", expand=True, padx=120, pady=40)
+
 
 def show_dashboard(role):
     dashboard_frame.pack(fill="both", expand=True)
@@ -174,8 +183,8 @@ def show_dashboard(role):
               bg=COLORS['accent'], fg=COLORS['text_primary'], font=("Segoe UI", 11, "bold")).pack(side="left", padx=(10,0))
     
         # Courier Net Earnings input
-    earnings_frame = tk.Frame(content, bg=COLORS['bg_card'], pady=10, padx=10)
-    earnings_frame.pack(fill="x", pady=(0,10))
+    # earnings_frame = tk.Frame(content, bg=COLORS['bg_card'], pady=10, padx=10)
+    # earnings_frame.pack(fill="x", pady=(0,10))
 
     #tk.Label(earnings_frame, text="Predict Courier Trip Earnings:", bg=COLORS['bg_card'], fg=COLORS['text_primary'], font=("Segoe UI", 12)).grid(row=0, column=0, columnspan=2, sticky="w", pady=(0,5))
 
@@ -316,6 +325,31 @@ def show_dashboard(role):
     tk.Button(cancel_frame, text="Calculate", command=process_cancel_input,
             bg=COLORS['accent'], fg=COLORS['text_primary'], font=("Segoe UI", 11, "bold")).pack(side="left", padx=(10,0))
 
+    # --- Weather Score Input ---
+    weather_frame = tk.Frame(content, bg=COLORS['bg_card'], pady=10, padx=10)
+    weather_frame.pack(fill="x", pady=(0,10))
+
+    tk.Label(weather_frame, text="Enter City ID (for Weather):", 
+            bg=COLORS['bg_card'], fg=COLORS['text_primary'], font=("Segoe UI", 12)).pack(side="left", padx=(0,10))
+    entry_weather_city = tk.Entry(weather_frame, width=10, font=("Segoe UI", 12))
+    entry_weather_city.pack(side="left", padx=(0,10))
+
+    output_label_weather = tk.Label(weather_frame, text="", bg=COLORS['bg_card'], 
+                                    fg=COLORS['accent'], font=("Segoe UI", 12, "bold"))
+    output_label_weather.pack(side="left", padx=(10,0))
+
+    def process_weather_input():
+        try:
+            city_id = int(entry_weather_city.get())
+            model = train_weather_model()  # Train or load the model
+            score = get_city_weather_score(model, city_id)
+            output_label_weather.config(text=f"🌤 Weather Rating: {round(score, 2)}/5")
+        except Exception as e:
+            output_label_weather.config(text=f"Error: {e}")
+
+    tk.Button(weather_frame, text="Check Weather", command=process_weather_input,
+            bg=COLORS['accent'], fg=COLORS['text_primary'], font=("Segoe UI", 11, "bold")).pack(side="left", padx=(10,0))
+
 
     # Jobs section
     jobs_section = tk.Frame(content, bg=COLORS['bg_secondary'])
@@ -412,7 +446,7 @@ def show_dashboard(role):
         create_action_button(action_frame, "⚙️ Preferences", lambda: None).pack(side="left")
         
         # Go offline button on right
-        offline_btn = create_action_button(action_frame, "● Go Offline", lambda: None, COLORS['text_muted'])
+        offline_btn = create_action_button(action_frame, "● Go Offline", go_offline, COLORS['text_muted'])
         offline_btn.pack(side="right")
     else:  # Courier
         create_action_button(action_frame, "🗺️ Hotspot Map", lambda: None).pack(side="left", padx=(0, 10))
@@ -438,8 +472,6 @@ def show_dashboard(role):
     tk.Label(tips_frame, text=tip_text, font=("Segoe UI", 11),
              bg=COLORS['bg_card'], fg=COLORS['text_secondary'],
              wraplength=1000, justify="left").pack(anchor="w", padx=20, pady=(0, 15))
-
-
 
 
 

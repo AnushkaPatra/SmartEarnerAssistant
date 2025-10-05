@@ -1,3 +1,4 @@
+import os 
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -5,8 +6,15 @@ from sklearn.metrics import accuracy_score
 
 # --- 1. Train the weather model ---
 def train_weather_model():
-    # Load dataset
-    weather_data = pd.read_csv(r"..\resources\weather_daily.csv")
+
+    # Get the directory where THIS script is located
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Build path relative to the script location
+    csv_path = os.path.join(script_dir, "..", "resources", "weather_daily.csv")
+
+    weather_data = pd.read_csv(csv_path)
+    
 
     # Encode weather to numeric codes
     weather_data["weather_code"] = weather_data["weather"].map({
