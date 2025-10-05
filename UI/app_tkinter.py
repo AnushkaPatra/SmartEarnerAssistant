@@ -531,6 +531,7 @@ def show_dashboard(role):
 # ----------------- MAIN WINDOW ---------------- #
 root = tk.Tk()
 root.title("Smart Earner Assistant")
+
 root.configure(bg=COLORS['bg_primary'])
 root.attributes('-fullscreen', True)
 root.bind("<Escape>", lambda e: root.quit())
@@ -542,9 +543,24 @@ desc_card = tk.Frame(desc_frame, bg=COLORS['bg_secondary'])
 desc_card.pack(fill="both", expand=True)
 desc_content = tk.Frame(desc_card, bg=COLORS['bg_secondary'])
 desc_content.pack(fill="both", expand=True, padx=60, pady=50)
-tk.Label(desc_content, text="Smart Earner Assistant", font=("Segoe UI", 36, "bold"), bg=COLORS['bg_secondary'], fg=COLORS['text_primary']).pack(pady=(0,10))
+
+# Get the directory where THIS script is located
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Build path relative to the script location
+app_logo = os.path.join(script_dir, "..", "assets", "UberMateLogo.png")
+
+# Open and resize the image
+logo = Image.open(app_logo)
+logo = logo.resize((400, 120), Image.Resampling.LANCZOS)
+logo_tk = ImageTk.PhotoImage(logo)
+
+# Use the logo instead of text
+logo_label = tk.Label(desc_content, image=logo_tk, bg=COLORS['bg_secondary'])
+logo_label.pack(pady=(0, 10))
+
 tk.Label(desc_content, text="Professional Digital Co-Pilot for Uber Earners", font=("Segoe UI", 15), bg=COLORS['bg_secondary'], fg=COLORS['text_secondary']).pack(pady=(0,30))
-tk.Label(desc_content, text="Anushka Patra  •  Tanisha Doshi  •  Nguyen Do", font=("Segoe UI", 13, "bold"), bg=COLORS['bg_secondary'], fg=COLORS['accent']).pack(pady=(0,30))
+tk.Label(desc_content, text="Anushka Patra  •  Tanisha Doshi  •  Nguyen Do • Nehir Kirkgoz • Eda Cetinkaya", font=("Segoe UI", 13, "bold"), bg=COLORS['bg_secondary'], fg=COLORS['accent']).pack(pady=(0,30))
 desc_text = ("Optimize daily operations, maximize earnings, and enhance well-being through "
              "predictive analytics and intelligent recommendations.\n\n"
              "Key Capabilities:\n"
@@ -572,7 +588,7 @@ courier_btn.pack(pady=15)
 dashboard_frame = tk.Frame(root, bg=COLORS['bg_primary'])
 
 # Footer
-footer = tk.Label(root, text="© 2025 Smart Earner Assistant  •  Built for Junction Hackathon", bg=COLORS['bg_primary'], fg=COLORS['text_muted'], font=("Segoe UI", 10))
+footer = tk.Label(root, text="© 2025 Smart Earner Assistant  •  Built with the help of ChatGPT (OpenAI)  for Junction Hackathon", bg=COLORS['bg_primary'], fg=COLORS['text_muted'], font=("Segoe UI", 12))
 footer.pack(side="bottom", pady=15)
 
 # Run
